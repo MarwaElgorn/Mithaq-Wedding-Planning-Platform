@@ -1,81 +1,117 @@
-# Mithaq – Wedding Planning Platform
+# Mithaq – Wedding Planning Platform  
+Graduation Project | Recruiter Focused Documentation
 
-Mithaq is a modern wedding planning platform designed to simplify how couples explore services, compare vendors, and organize their wedding journey in one structured experience.
+Mithaq is a full featured wedding planning platform built to solve real problems in the Egyptian wedding market.  
+The project demonstrates the ability to design build and deliver a production style frontend application with real backend integration using Supabase.
 
-The project is built as a real-world front-end application that reflects realistic user flows, business logic, and UI decisions found in production platforms.
-
----
-
-## Brand Overview
-
-Mithaq represents commitment, clarity, and trust.
-
-Wedding planning is often scattered across multiple platforms, vendors, and conversations. Mithaq brings everything together into a single, well-organized system that helps couples make confident decisions without unnecessary stress.
-
-The brand principles focus on:
-- Clear structure and organization
-- Simplicity over overload
-- Consistent visual language
-- Calm and reliable user experience
+This repository represents a complete end to end product not a UI demo.
 
 ---
 
-## Product Vision
+## Project Context
 
-Mithaq simulates the complete wedding planning lifecycle:
+Wedding planning in Egypt is fragmented and stressful.
 
-- Discovering wedding services and vendors
-- Exploring detailed service and vendor profiles
-- Comparing packages, pricing, and availability
-- Booking appointments with planners
-- Selecting dates, services, and products
-- Managing a personalized shopping cart
-- Requiring authentication before sensitive actions
+Couples depend on  
+- Facebook groups  
+- Manual price comparison  
+- Phone calls and messages  
+- Unverified recommendations  
 
-The goal is to present a realistic, end-to-end product rather than a static showcase.
+This leads to wasted time financial risk and mental pressure.
+
+Mithaq was built to centralize the entire wedding planning journey into one structured trusted digital platform.
+
+---
+
+## Graduation Project Goals
+
+This project was developed to demonstrate
+
+- Real world problem solving  
+- Scalable frontend architecture  
+- Backend integration using Supabase  
+- Authentication and protected user flows  
+- UX driven feature decisions  
+- Production ready code organization  
+
+---
+
+## Product Scope
+
+The platform covers the full wedding planning lifecycle.
+
+Users can  
+- Explore wedding services vendors and products  
+- View detailed vendor and service profiles  
+- Compare pricing packages and availability  
+- Select dates and book appointments  
+- Add services and products to a personal cart  
+- Authenticate before sensitive actions  
+- Learn through educational blog content  
 
 ---
 
 ## Core Features
 
-- Fully responsive UI across all screen sizes
-- Light and Dark mode support
-- Unified shop experience for:
-  - Wedding services
-  - Vendors
-  - Products
-- Detailed pages with:
-  - Image galleries
-  - Pricing and packages
-  - Availability and date selection
-  - Reviews and ratings
-- Appointment booking with validation logic
-- User-specific shopping cart
-- Secure authentication via Firebase:
-  - Email and password
-  - Google sign-in
-  - Facebook sign-in
-- Smooth animations and page transitions
-- Toast notifications and loading states
-- Modular and reusable UI components
+### Browsing and Discovery
+- Organized categories
+- Unified shop experience
+- Clear navigation and filtering
+
+### Vendor and Service Details
+- Image galleries
+- Pricing and packages
+- Availability dates
+- Structured information display
+
+### Booking System
+- Date selection logic
+- Availability validation
+- Appointment booking
+- Prevention of invalid actions
+
+### Shopping Cart
+- User specific cart
+- Persistent cart data
+- Add remove and update items
+- Authentication gated access
+
+### Authentication
+- Supabase authentication
+- Email and password login
+- Secure session handling
+- Protected routes
+
+### Content and Blog
+- Educational blog section
+- Budget planning guidance
+- Scam avoidance content
+- Decision support articles
+
+### UI and UX
+- Fully responsive design
+- Light and dark mode
+- Smooth page transitions
+- Animations with Framer Motion
+- Loading indicators
+- Toast notifications
 
 ---
 
-## Technology Stack
+## Technical Stack
 
 ### Frontend
 - React 19
 - React Router DOM v7
 - Tailwind CSS
 - Framer Motion
-- Swiper.js
+- Swiper
 
-### Authentication
-- Firebase Authentication
-
-### Data Handling
-- Static data and mock APIs
-- JSON Server for local development simulation
+### Backend
+- Supabase
+- PostgreSQL
+- Row Level Security
 
 ### Tooling
 - Vite
@@ -86,35 +122,40 @@ The goal is to present a realistic, end-to-end product rather than a static show
 
 ## Architecture Highlights
 
-- Component-based architecture
-- Clear separation of concerns:
-  - Pages
-  - Layouts
-  - Shared components
+- Component based architecture
+- Clear separation of concerns
+- Reusable UI components
+- Services layer for Supabase logic
 - Scalable folder structure
-- Clean routing and state management
-- Production-ready build configuration
+- Clean routing strategy
 
 ---
 
-## What This Project Demonstrates
+## What This Project Demonstrates to Recruiters
 
-- Building scalable React applications
-- Strong understanding of UI and UX flows
-- Handling authentication and protected actions
-- Writing clean and maintainable front-end code
-- Attention to user experience and edge cases
-- Readiness for real-world deployment
+- Ability to build a real product from idea to delivery
+- Strong understanding of React architecture
+- Experience with Supabase authentication and database
+- Handling real business logic and edge cases
+- Clean readable and maintainable code
+- UX focused decision making
+- Readiness for production level frontend roles
 
 ---
 
 ## Screenshots
+
+### Home
+![Home](public/screenshots/home.png)
+
 ### Services
 ![Services](public/screenshots/Services.png)
 
-### Service page
-![Service page](public/screenshots/servicepage.png)
+### About
+![About](public/screenshots/about.png)
 
+### Service Vendors Page
+![Service Vendors Page](public/screenshots/servicepage.png)
 
 ### Vendor Details
 ![Vendor Details](public/screenshots/vendordetails.png)
@@ -125,9 +166,11 @@ The goal is to present a realistic, end-to-end product rather than a static show
 ### Blog Details
 ![Blog Details](public/screenshots/blogdetails.png)
 
-
 ### Shop
 ![Shop](public/screenshots/shop.png)
+
+### Book Appointment
+![Book Appointment](public/screenshots/bookappointment.png)
 
 ### Cart
 ![Cart](public/screenshots/cart.png)
@@ -135,15 +178,11 @@ The goal is to present a realistic, end-to-end product rather than a static show
 ### Dark Mode
 ![Dark Mode](public/screenshots/Darkmode.png)
 
-### About
-![About](public/screenshots/about.png)
-
 ---
 
 ## Scripts
 
 ```bash
-npm run dev       # Start development server
-npm run build     # Build for production
-npm run preview   # Preview production build
-npm run server    # Run JSON Server on port 3000
+npm run dev
+npm run build
+npm run preview
