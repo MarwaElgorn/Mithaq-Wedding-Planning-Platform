@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../contexts/AuthContext.jsx";
+
 import {
   FaFacebookF,
   FaArrowRight,
@@ -209,7 +211,26 @@ const ShopDetails = () => {
     fetchItem();
   }, [type, id]);
 
-  const handleAddPackageToCart = async () => {
+const { user, loading: authLoading } = useAuth();
+
+
+/**
+ * Handles adding a package to the cart.
+ * It checks if the user is logged in and if a package is selected.
+ * If the vendor is a product vendor, it also checks if a date is selected.
+ * If the package is already in the cart, it shows an error message.
+ * If there is an error while adding the package, it shows an error message.
+ * If the package is added successfully, it shows a success message and dispatches a userChanged event.
+ */
+const handleAddPackageToCart = async () => {
+  try {
+    if (authLoading) return;
+
+    if (!user) {
+      toast.error("You must be logged in");
+      return;
+    }
+
     if (!selectedPackage) {
       toast.error("Please select a package");
       return;
@@ -220,52 +241,51 @@ const ShopDetails = () => {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.id) {
-      toast.error("You must be logged in");
-      return;
-    }
-
     const vendorId = Number(product.id);
     if (Number.isNaN(vendorId)) {
       toast.error("Invalid vendor");
       return;
     }
 
-    const imageUrl = product.vendor_images?.[0]?.image_url || null;
+    const imageUrl =
+      Array.isArray(product.vendor_images) && product.vendor_images.length > 0
+        ? product.vendor_images[0].image_url
+        : null;
 
-    try {
-      const { data: existing } = await supabase
-        .from("cart_items")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("vendor_id", vendorId)
-        .limit(1);
+    const { data: existing } = await supabase
+      .from("cart_items")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("vendor_id", vendorId)
+      .maybeSingle();
 
-      if (existing?.length) {
-        toast.error("You already selected a package for this vendor");
-        return;
-      }
-
-      const { error } = await supabase.from("cart_items").insert({
-        user_id: user.id,
-        vendor_id: vendorId,
-        package_id: selectedPackage.id ?? null,
-        title: `${product.name} - ${selectedPackage.title}`,
-        price: selectedPackage.price,
-        quantity: 1,
-        booking_date: selectedDate || null,
-        image_url: imageUrl,
-      });
-
-      if (error) throw error;
-
-      window.dispatchEvent(new Event("userChanged"));
-      toast.success("Package added to cart");
-    } catch {
-      toast.error("Failed to add package");
+    if (existing) {
+      toast.error("You already selected a package for this vendor");
+      return;
     }
-  };
+
+    const { error } = await supabase.from("cart_items").insert({
+      user_id: user.id,
+      vendor_id: vendorId,
+      package_id: selectedPackage.id ?? null,
+      title: `${product.name} - ${selectedPackage.title}`,
+      price: selectedPackage.price,
+      quantity: 1,
+      booking_date: selectedDate || null,
+      image_url: imageUrl,
+    });
+
+    if (error) throw error;
+
+    window.dispatchEvent(new Event("userChanged"));
+    toast.success("Package added to cart");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add package");
+  }
+};
+
+
 
   if (loading) {
     return (
@@ -293,126 +313,123 @@ const ShopDetails = () => {
       : []),
   ];
 
-  const handleAddDateToCart = async (date) => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+const handleAddDateToCart = async (date) => {
+  try {
+    if (authLoading) return;
 
-      if (!user) {
-        toast.error("You must be logged in");
-        return;
-      }
+    if (!user) {
+      toast.error("You must be logged in");
+      return;
+    }
 
-      const vendorId = Number(product.id);
-      if (Number.isNaN(vendorId)) {
-        toast.error("Invalid vendor");
-        return;
-      }
+    const vendorId = Number(product.id);
+    if (Number.isNaN(vendorId)) {
+      toast.error("Invalid vendor");
+      return;
+    }
 
-      const imageUrl =
-        Array.isArray(product.vendor_images) && product.vendor_images.length > 0
-          ? product.vendor_images[0].image_url
-          : null;
+    const imageUrl =
+      Array.isArray(product.vendor_images) && product.vendor_images.length > 0
+        ? product.vendor_images[0].image_url
+        : null;
 
-      // check existing booking
-      const { data: existing, error: checkError } = await supabase
+    // check existing booking
+    const { data: existing, error: checkError } = await supabase
+      .from("cart_items")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("vendor_id", vendorId)
+      .maybeSingle();
+
+    if (checkError) throw checkError;
+
+    if (existing) {
+      toast.error("You already booked a date for this vendor");
+      return;
+    }
+
+    // insert booking
+    const { error } = await supabase.from("cart_items").insert({
+      user_id: user.id,
+      vendor_id: vendorId,
+      booking_date: date,
+      quantity: 1,
+      price: product.price || 0,
+      title: `${product.name} - ${date}`,
+      image_url: imageUrl,
+    });
+
+    if (error) throw error;
+
+    setSelectedDate(date);
+    setDateError("");
+    window.dispatchEvent(new Event("userChanged"));
+
+    toast.success(`Booking confirmed for ${date}`);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add date");
+  }
+};
+
+const handleAddSimpleProductToCart = async () => {
+  try {
+    if (authLoading) return;
+
+    if (!user) {
+      toast.error("You must be logged in");
+      return;
+    }
+
+    const imageUrl =
+      Array.isArray(product.product_images) &&
+      product.product_images.length > 0
+        ? product.product_images[0].image_url
+        : null;
+
+    // check if product already in cart
+    const { data: existing, error: checkError } = await supabase
+      .from("cart_items")
+      .select("id, quantity")
+      .eq("user_id", user.id)
+      .eq("product_id", product.id)
+      .maybeSingle();
+
+    if (checkError) throw checkError;
+
+    // لو موجود نزود الكمية
+    if (existing) {
+      const { error } = await supabase
         .from("cart_items")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("vendor_id", vendorId)
-        .maybeSingle();
+        .update({
+          quantity: existing.quantity + 1,
+        })
+        .eq("id", existing.id);
 
-      if (checkError) throw checkError;
-
-      if (existing) {
-        toast.error("You already booked a date for this vendor");
-        return;
-      }
-
-      // insert booking
+      if (error) throw error;
+    }
+    // لو مش موجود نعمل insert
+    else {
       const { error } = await supabase.from("cart_items").insert({
         user_id: user.id,
-        vendor_id: vendorId,
-        booking_date: date,
+        product_id: product.id,
         quantity: 1,
         price: product.price || 0,
-        title: `${product.name} - ${date}`,
+        title: product.title || product.name,
         image_url: imageUrl,
       });
 
       if (error) throw error;
-
-      setSelectedDate(date);
-      setDateError("");
-      window.dispatchEvent(new Event("userChanged"));
-
-      toast.success(`Booking confirmed for ${date}`);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to add date");
     }
-  };
 
-  const handleAddSimpleProductToCart = async () => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    window.dispatchEvent(new Event("userChanged"));
+    toast.success("Added to cart");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add to cart");
+  }
+};
 
-      if (!user) {
-        toast.error("You must be logged in");
-        return;
-      }
-
-      const imageUrl =
-        Array.isArray(product.product_images) &&
-        product.product_images.length > 0
-          ? product.product_images[0].image_url
-          : null;
-
-      // check if product already in cart
-      const { data: existing, error: checkError } = await supabase
-        .from("cart_items")
-        .select("id, quantity")
-        .eq("user_id", user.id)
-        .eq("product_id", product.id)
-        .maybeSingle();
-
-      if (checkError) throw checkError;
-
-      // لو موجود نزود الكمية
-      if (existing) {
-        const { error } = await supabase
-          .from("cart_items")
-          .update({
-            quantity: existing.quantity + 1,
-          })
-          .eq("id", existing.id);
-
-        if (error) throw error;
-      }
-      // لو مش موجود نعمل insert
-      else {
-        const { error } = await supabase.from("cart_items").insert({
-          user_id: user.id,
-          product_id: product.id,
-          quantity: 1,
-          price: product.price || 0,
-          title: product.title || product.name,
-          image_url: imageUrl,
-        });
-
-        if (error) throw error;
-      }
-
-      window.dispatchEvent(new Event("userChanged"));
-      toast.success("Added to cart");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to add to cart");
-    }
-  };
 
   const safeImages = images.filter(Boolean);
 

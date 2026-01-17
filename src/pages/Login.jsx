@@ -69,31 +69,38 @@ const Login = () => {
       toast.error("Login failed");
     }
   };
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
+const redirectTo = `${window.location.origin}${window.location.pathname}`;
 
-    if (error) {
-      toast.error("Google login failed");
-    }
-  };
 
-  const handleFacebookLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "facebook",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
 
-    if (error) {
-      toast.error("Facebook login failed");
-    }
-  };
+const handleGoogleLogin = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo,
+    },
+  });
+
+  if (error) {
+    toast.error("Google login failed");
+  }
+};
+
+const handleFacebookLogin = async () => {
+  const redirectTo = `${window.location.origin}${window.location.pathname}`;
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "facebook",
+    options: {
+      redirectTo,
+    },
+  });
+
+  if (error) {
+    toast.error("Facebook login failed");
+  }
+};
+
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (event, session) => {
