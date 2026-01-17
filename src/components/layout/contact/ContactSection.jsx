@@ -101,8 +101,8 @@ export default function ContactSection() {
               Let's get in touch with us
             </h2>
             <p className="text-md text-footer-light mb-10 max-w-md dark:text-gray-300">
-              You can also reach out to us by phone or email. هناك العديد من
-              الطرق للتواصل معنا.
+              You can also reach out to us by phone or email.
+           
             </p>
             <div className="space-y-6">
               {info.map((item, index) => (
@@ -190,7 +190,7 @@ export default function ContactSection() {
                     size="md"
                     className="bg-[--primary] dark:bg-green-700 hover:bg-[--primary-dark] dark:hover:bg-green-800 text-white"
                   >
-                    Make An Order
+                 Send Message
                   </SharedButton>
                 </motion.div>
               </div>
