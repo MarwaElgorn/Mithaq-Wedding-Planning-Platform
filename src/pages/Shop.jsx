@@ -107,10 +107,12 @@ export default function Shop() {
     <AnimatedPage>
       <PageHeader title={pageTitle} breadcrumbs={breadcrumbs} />
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-7xl mx-auto px-4 py-12 bg-white dark:bg-gray-900">
+
         {/* TOP BAR */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="text-sm text-gray-600">
+         <div className="text-sm text-gray-600 dark:text-gray-300">
+
             There are <b>{sortedItems.length}</b> results
           </div>
 
@@ -122,9 +124,15 @@ export default function Shop() {
               <button
                 key={btn.id}
                 onClick={() => setView(btn.id)}
-                className={`p-2 border rounded ${
-                  view === btn.id ? "bg-gray-800 text-white" : ""
-                }`}
+           className={`p-2 border rounded transition
+  dark:border-gray-700
+  ${
+    view === btn.id
+      ? "bg-gray-800 text-white dark:bg-teal-600"
+      : "dark:text-gray-300 dark:hover:bg-gray-800"
+  }
+`}
+
               >
                 {btn.icon}
               </button>
@@ -135,7 +143,11 @@ export default function Shop() {
             <select
               value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="border px-3 py-2"
+            className="border px-3 py-2
+  bg-white text-gray-800
+  dark:bg-gray-800 dark:text-gray-200
+  dark:border-gray-700"
+
             >
               <option value="all">All Categories</option>
               {categories.map(c => (
@@ -148,7 +160,11 @@ export default function Shop() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="border px-3 py-2"
+            className="border px-3 py-2
+  bg-white text-gray-800
+  dark:bg-gray-800 dark:text-gray-200
+  dark:border-gray-700"
+
             >
               <option value="default">Relevance</option>
               <option value="name">Name</option>
