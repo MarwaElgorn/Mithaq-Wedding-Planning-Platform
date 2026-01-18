@@ -12,6 +12,8 @@ import logo from "../../assets/images/icons/Vector.svg";
 import whitelogo from "../../assets/images/icons/darkVector.svg";
 import message from "../../assets/images/icons/message.svg";
 import { supabase } from "../../services/supabase";
+import { HiX } from "react-icons/hi";
+
 
 export default function MainNavbar() {
   const [dark, setDark] = useState(() => {
@@ -58,19 +60,19 @@ export default function MainNavbar() {
   const navigate = useNavigate();
 
   // Fetch profile name from Supabase profiles table
-useEffect(() => {
-  if (!user) {
-    setProfileName(null);
-    return;
-  }
+  useEffect(() => {
+    if (!user) {
+      setProfileName(null);
+      return;
+    }
 
-  const name =
-    user.user_metadata?.full_name ||
-    user.user_metadata?.name ||
-    user.email?.split("@")[0];
+    const name =
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.email?.split("@")[0];
 
-  setProfileName(name);
-}, [user]);
+    setProfileName(name);
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -84,21 +86,23 @@ useEffect(() => {
   return (
     <nav className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 font-opensans text-sm leading-none">
       <div className="flex items-center justify-between h-16 px-4 md:px-10 lg:px-20 xl:px-40">
-        <div className="flex items-center gap-2">
-          <img
-            src={logo}
-            alt="Methaq"
-            className="h-8 w-auto flex-shrink-0 dark:hidden"
-          />
-          <img
-            src={whitelogo}
-            alt="Methaq"
-            className="h-8 w-auto flex-shrink-0 hidden dark:block"
-          />
-          <span className="font-bodoni text-[40px] font-sail text-navy-dark dark:text-white">
-            Mithaq
-          </span>
-        </div>
+        <Link to="/" className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <img
+              src={logo}
+              alt="Methaq"
+              className="h-8 w-auto flex-shrink-0 dark:hidden"
+            />
+            <img
+              src={whitelogo}
+              alt="Methaq"
+              className="h-8 w-auto flex-shrink-0 hidden dark:block"
+            />
+            <span className="font-bodoni text-[40px] font-sail text-navy-dark dark:text-white">
+              Mithaq
+            </span>
+          </div>
+        </Link>
         <ul className="hidden lg:flex items-center gap-2">
           {[
             { name: "Home", path: "/home" },
@@ -167,8 +171,7 @@ useEffect(() => {
                 {isProfileOpen && (
                   <div className="absolute top-full right-0 mt-3 w-44 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
                     <div className="px-4 py-2 text-sm font-semibold text-gray-700 font-bdodoni dark:text-gray-200 ">
-            Welcome {profileName?.split(" ")[0] || "User"}
-
+                      Welcome {profileName?.split(" ")[0] || "User"}
                     </div>
                     <button
                       onClick={handleLogout}
@@ -262,19 +265,29 @@ useEffect(() => {
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
             <img
-              src="./src/assets/images/icons/Vector.svg"
-              alt="Methaq"
-              className="h-7 w-auto flex-shrink-0"
+              src={dark ? whitelogo : logo}
+              alt="Mithaq"
+              className="h-7 w-auto"
             />
+
             <span className="font-bodoni text-lg text-navy-dark dark:text-white">
-              Methaq
+              Mithaq
             </span>
           </div>
           <button
-            onClick={closeMenu}
-            className="text-2xl text-navy-dark dark:text-white"
+            onClick={toggleDark}
+            className="flex items-center gap-3 text-navy-dark dark:text-white"
           >
-            ×
+            {dark ? <FaSun /> : <FaMoon />}
+            <span>{dark ? "Light Mode" : "Dark Mode"}</span>
+          </button>
+
+          <button
+            onClick={closeMenu}
+            className="text-2xl text-navy-dark dark:text-white hover:text-emerald-500 transition"
+            aria-label="Close menu"
+          >
+            <HiX />
           </button>
         </div>
         <ul className="flex flex-col gap-5 px-6 py-6 text-base font-opensans text-navy-dark dark:text-white">
