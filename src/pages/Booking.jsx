@@ -6,6 +6,7 @@ import SharedButton from "../components/shared/Button";
 import AnimatedPage from "../components/shared/AnimatedPage";
 import ServicesTestimonials from "../components/layout/Services/ServicesTestimonials";
 import SharedInput from "../components/shared/Input";
+import {booking} from "src/assets/images/book appointment.jpg"
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[0-9]{8,15}$/;
@@ -15,12 +16,11 @@ const Booking = () => {
   const [loading, setLoading] = useState(false);
   const [bookedDates, setBookedDates] = useState([]);
 
-  // جلب التواريخ المحجوزة عند تحميل الصفحة
   useEffect(() => {
     fetch("http://localhost:3000/Apointments")
       .then((res) => res.json())
       .then((data) => {
-        // اجمع كل التواريخ المحجوزة في مصفوفة (تأكد من وجود قيمة date)
+   
         setBookedDates(data.map((item) => item.date).filter(Boolean));
       });
   }, []);
@@ -113,7 +113,7 @@ const Booking = () => {
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
               <img
-                src="src/assets/images/book appointment.jpg"
+                src={booking}
                 alt="Booking"
                 className="w-full h-[380px] md:h-[460px] object-cover rounded-2xl"
               />
