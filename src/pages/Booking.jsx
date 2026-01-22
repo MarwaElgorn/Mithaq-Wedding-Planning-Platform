@@ -6,7 +6,9 @@ import SharedButton from "../components/shared/Button";
 import AnimatedPage from "../components/shared/AnimatedPage";
 import ServicesTestimonials from "../components/layout/Services/ServicesTestimonials";
 import SharedInput from "../components/shared/Input";
-import {booking} from "../assets/images/book appointment.jpg"
+import booking from "../assets/images/book-appointment.jpg";
+
+
 
 
 
